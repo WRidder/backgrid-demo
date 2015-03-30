@@ -1,13 +1,6 @@
-// Backgrid patch
 /**
- * Following functions are meant as override of current Backgrid (0.3.5.) functionality.
- * This is because the sizeable, orderable and groupable backgrid extensions need this.
- * Should not be needed anymore once https://github.com/wyuenho/backgrid/pull/527 has been discussed
+ * Backgrid demo implementation of multiple plugins.
  */
-Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
-Backgrid.Header.prototype.initialize = BackgridHeaderInitializeMethod;
-Backgrid.Header.prototype.createHeaderRow = BackgridHeaderCreateHeaderRowMethod;
-Backgrid.Header.prototype.render = BackgridHeaderRenderMethod;
 
 // Helper functions
 function getParameterByName(name) {
@@ -16,6 +9,9 @@ function getParameterByName(name) {
 		results = regex.exec(location.search);
 	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
+
+// Plugin settings
+
 
 // Create column collection
 var columns = new Backgrid.Columns([{
@@ -61,14 +57,6 @@ var territories = new Backbone.Collection([{"name": "Afghanistan", "url": "http:
 var colManager = new Backgrid.Extension.ColumnManager(columns, {
 	initialColumnsVisible: 4
 });
-
-// Add control
-var colVisibilityControl = new Backgrid.Extension.ColumnManagerVisibilityControl({
-	columnManager: colManager,
-	dropdownAlign: "left"
-});
-
-$("#control").append(colVisibilityControl.render().el);
 
 // Initialize a new Grid instance
 var grid = new Backgrid.Grid({

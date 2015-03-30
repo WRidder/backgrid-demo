@@ -1,7 +1,4 @@
 /*
- backgrid-sizeable-columns
- https://github.com/WRidder/backgrid-sizeable-columns
-
  Copyright (c) 2014 Wilbert van de Ridder
  Licensed under the MIT @license.
  */
@@ -82,3 +79,9 @@ var BackgridHeaderRenderMethod = function () {
 
   return this;
 };
+
+// Backgrid patch
+Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
+Backgrid.Header.prototype.initialize = BackgridHeaderInitializeMethod;
+Backgrid.Header.prototype.createHeaderRow = BackgridHeaderCreateHeaderRowMethod;
+Backgrid.Header.prototype.render = BackgridHeaderRenderMethod;

@@ -17,7 +17,6 @@ gulp.task("move-library", function(cb) {
 		"node_modules/backgrid-paginator/backgrid-paginator.js",
 		"node_modules/backgrid-filter/backgrid-filter.js",
 		"node_modules/backgrid-columnmanager/lib/Backgrid.ColumnManager.js",
-		"node_modules/backgrid-grouped-columns/backgrid-patch.js",
 		"node_modules/backgrid-grouped-columns/backgrid-grouped-columns.js",
 		"node_modules/backgrid-sizeable-columns/backgrid-sizeable-columns.js",
 		"node_modules/backgrid-orderable-columns/backgrid-orderable-columns.js"
@@ -25,6 +24,7 @@ gulp.task("move-library", function(cb) {
 
 	// Vendor css
 	gulp.src([
+		"node_modules/normalize.css/normalize.css",
 		"node_modules/bootstrap/dist/css/bootstrap.css",
 		"node_modules/backgrid/lib/backgrid.css",
 		"node_modules/backgrid-paginator/backgrid-paginator.css",
