@@ -237,7 +237,8 @@ function renderGrid() {
 		});
 
 		// Render the filter
-		$("#grid-container").append(filter.render().el);
+		var $filterContainer = $("<div id='filter-container'></div>").appendTo($("#grid-container"));
+		$filterContainer.append(filter.render().el);
 
 		// Add some space to the filter and move it to the right
 		$(filter.el).css({float: "right", margin: "20px"});

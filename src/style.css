@@ -15,3 +15,8 @@ table.backgrid {
     padding: 0;
     margin: 0;
 }
+
+/* filter */
+#filter-container {
+    clear: both;
+}
