@@ -28,7 +28,7 @@ var qs = (function(a) {
 var pluginSettings = {
 	// Official backgrid plugins
 	"backgrid-paginator": true,
-	"backgrid-filter": false,
+	"backgrid-filter": true,
 	"backgrid-select-all": false,
 
 	// Un-official backgrid plugins
@@ -132,6 +132,15 @@ function getColumnCollection() {
 		cell: "uri" // Renders the value in an HTML anchor element
 	}];
 
+	if (pluginSettings["backgrid-columnmanager"]) {
+		columnDefinition.push({
+			label: "visibility",
+			cell: "boolean",
+			alwaysVisible: true,
+			headerCell: Backgrid.Extension.ColumnManager.ColumnVisibilityHeaderCell
+		});
+	}
+
 	return new Backgrid.Columns(columnDefinition);
 }
 
@@ -152,6 +161,14 @@ function renderGrid() {
 			},
 			mode: "client" // page entirely on the client side
 		}) : new Backbone.Collection(data);
+
+	// backgrid-columnmanager enabled?
+	var colManager;
+	if (pluginSettings["backgrid-columnmanager"]) {
+		colManager = new Backgrid.Extension.ColumnManager(columnCollection, {
+			initialColumnsVisible: 4
+		});
+	}
 
 	// backgrid-filter enabled?
 	if (pluginSettings["backgrid-filter"]) {
