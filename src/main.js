@@ -29,10 +29,10 @@ var pluginSettings = {
 	// Official backgrid plugins
 	"backgrid-paginator": true,
 	"backgrid-filter": true,
-	"backgrid-select-all": false,
+	"backgrid-select-all": true,
 
 	// Un-official backgrid plugins
-	"backgrid-columnmanager": false,
+	"backgrid-columnmanager": true,
 	"backgrid-grouped-columns": false,
 	"backgrid-sizeable-columns": false,
 	"backgrid-orderable-columns": false
@@ -131,6 +131,14 @@ function getColumnCollection() {
 		label: "URL",
 		cell: "uri" // Renders the value in an HTML anchor element
 	}];
+
+	if (pluginSettings["backgrid-select-all"]) {
+		columnDefinition.unshift({
+			name: "",
+			cell: "select-row",
+			headerCell: "select-all"
+		});
+	}
 
 	if (pluginSettings["backgrid-columnmanager"]) {
 		columnDefinition.push({

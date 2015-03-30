@@ -1,7 +1,7 @@
 # Backgrid plugin demo
 Integration example and demo of a multitude of backgrid plugins.
 
-[Demo site](http://wridder.github.io/backgrid-demo/);
+[View demo](http://wridder.github.io/backgrid-demo/)
 
 ## Currently implemented plugins:
   * **Official**
