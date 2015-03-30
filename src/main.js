@@ -83,23 +83,34 @@ setCheckboxValues();
 // Create column collection
 function getColumnCollection() {
 	var extraSettings= {
+		"select-column": {
+			nesting: ["test"],
+			width: 50,
+			resizeAble: false
+		},
 		"id": {
-			width: 50
+			width: 50,
+			nesting: ["General"]
 		},
 		"name": {
-			width: 50
+			width: 100,
+			nesting: ["General"]
 		},
 		"pop": {
-			width: 50
+			width: 100,
+			nesting: ["Custom", "numbers"]
 		},
 		"percentage": {
-			width: 50
+			width: 100,
+			nesting: ["Custom", "numbers"]
 		},
 		"date": {
-			width: 50
+			width: 100,
+			nesting: ["Custom"]
 		},
 		"url": {
-			width: 50
+			width: "*",
+			nesting: ["Custom"]
 		}
 	};
 
@@ -134,7 +145,7 @@ function getColumnCollection() {
 
 	if (pluginSettings["backgrid-select-all"]) {
 		columnDefinition.unshift({
-			name: "",
+			name: "select-column",
 			cell: "select-row",
 			headerCell: "select-all"
 		});
@@ -149,7 +160,45 @@ function getColumnCollection() {
 		});
 	}
 
-	return new Backgrid.Columns(columnDefinition);
+	if (pluginSettings["backgrid-grouped-columns"]) {
+		for (var i = 0; i < columnDefinition.length; i++) {
+			var columnDef = columnDefinition[i];
+			if (_.has(extraSettings, columnDef.name)) {
+				columnDef.nesting = extraSettings[columnDef.name].nesting;
+			}
+		}
+	}
+
+	if (pluginSettings["backgrid-sizeable-columns"]) {
+		for (var j = 0; j < columnDefinition.length; j++) {
+			var column = columnDefinition[j];
+			if (_.has(extraSettings, column.name)) {
+				column.nesting = extraSettings[column.name].width;
+			}
+		}
+	}
+
+	if (pluginSettings["backgrid-orderable-columns"]) {
+		var columnCollection = Backgrid.Columns.extend({
+			sortKey: "position",
+			comparator: function(item) {
+				return item.get(this.sortKey) || 999;
+			},
+			setPositions: function() {
+				_.each(this.models, function(model, index) {
+					model.set("position", index + 1, {silent: true});
+				});
+
+				return this;
+			}
+		});
+		var columns = new columnCollection(columnDefinition);
+		columns.setPositions().sort();
+		return columns;
+	}
+	else {
+		return new Backgrid.Columns(columnDefinition);
+	}
 }
 
 // Render the grid
@@ -194,8 +243,14 @@ function renderGrid() {
 		$(filter.el).css({float: "right", margin: "20px"});
 	}
 
+	var Header = Backgrid.Header;
+	if (pluginSettings["backgrid-grouped-columns"]) {
+		Header = Backgrid.Extension.GroupedHeader;
+	}
+
 	// Initialize a new Grid instance
 	var grid = new Backgrid.Grid({
+		header: Header,
 		columns: columnCollection,
 		collection: dataCollection
 	});
@@ -212,6 +267,34 @@ function renderGrid() {
 
 		// Render the paginator
 		$grid.after(paginator.render().el);
+	}
+
+	if (pluginSettings["backgrid-sizeable-columns"] || pluginSettings["backgrid-orderable-columns"]) {
+		// Add sizeable columns
+		var sizeAbleCol = new Backgrid.Extension.SizeAbleColumns({
+			collection: dataCollection,
+			columns: columnCollection,
+			grid: grid
+		});
+		$grid.find('thead').before(sizeAbleCol.render().el);
+
+		if (pluginSettings["backgrid-sizeable-columns"]) {
+			// Add resize handlers
+			var sizeHandler = new Backgrid.Extension.SizeAbleColumnsHandlers({
+				sizeAbleColumns: sizeAbleCol,
+				saveModelWidth: true
+			});
+			$grid.find('thead').before(sizeHandler.render().el);
+		}
+
+		if (pluginSettings["backgrid-orderable-columns"]) {
+			// Make columns reorderable
+			var orderHandler = new Backgrid.Extension.OrderableColumns({
+				grid: grid,
+				sizeAbleColumns: sizeAbleCol
+			});
+			$grid.find('thead').before(orderHandler.render().el);
+		}
 	}
 }
 

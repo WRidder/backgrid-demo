@@ -29,6 +29,7 @@
 
     initialize: function (options) {
       _.extend(this, this.defaults, options.headerOptions || {});
+			console.log("grouped options: ", options);
 
       this.columns = options.columns;
       if (!(this.columns instanceof Backbone.Collection)) {
