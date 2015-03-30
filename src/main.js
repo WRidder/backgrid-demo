@@ -1,3 +1,22 @@
+// Backgrid patch
+/**
+ * Following functions are meant as override of current Backgrid (0.3.5.) functionality.
+ * This is because the sizeable, orderable and groupable backgrid extensions need this.
+ * Should not be needed anymore once https://github.com/wyuenho/backgrid/pull/527 has been discussed
+ */
+Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
+Backgrid.Header.prototype.initialize = BackgridHeaderInitializeMethod;
+Backgrid.Header.prototype.createHeaderRow = BackgridHeaderCreateHeaderRowMethod;
+Backgrid.Header.prototype.render = BackgridHeaderRenderMethod;
+
+// Helper functions
+function getParameterByName(name) {
+	name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		results = regex.exec(location.search);
+	return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 // Create column collection
 var columns = new Backgrid.Columns([{
 	name: "id", // The key of the model attribute

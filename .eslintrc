@@ -1,0 +1,15 @@
+{
+  "env": {
+    "browser": true,
+    "amd": true
+  },
+  "rules": {
+    // Code style
+    "indent": [2, "tab"],
+    "quotes": [2, "double"],
+    "no-alert": 0,
+    "no-console": 1,
+    "global-strict": [2, "always"],
+    "no-unused-vars": [2, {"vars": "all", "args": "none"}]
+  }
+}

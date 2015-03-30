@@ -30,7 +30,7 @@
     "backbone": "^1.1.2",
     "backbone.paginator": "^2.0.2",
     "backgrid": "^0.3.5",
-    "backgrid-columnmanager": "^0.1.0",
+    "backgrid-columnmanager": "^0.1.1",
     "backgrid-filter": "^0.3.5",
     "backgrid-grouped-columns": "0.0.1",
     "backgrid-orderable-columns": "0.0.1",
@@ -39,5 +39,8 @@
     "bootstrap": "^3.3.4",
     "jquery": "^1.11.2",
     "underscore": "^1.8.2"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.11"
   }
 }
