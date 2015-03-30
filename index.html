@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="vendor/css/bootstrap.css">
 
     <!-- Official Backgrid Plugins -->
+    <script type="text/javascript" src="vendor/js/backgrid-select-all.js"></script>
+    <link rel="stylesheet" href="vendor/css/backgrid-select-all.css">
     <script type="text/javascript" src="vendor/js/backbone.paginator.js"></script>
     <script type="text/javascript" src="vendor/js/backgrid-paginator.js"></script>
     <link rel="stylesheet" href="vendor/css/backgrid-paginator.css">
@@ -45,8 +47,7 @@
 <body>
 <div class="container">
     <h1>Backgrid Plugin Demo <a target="_blank" class="sprite-icons-github" href="https://github.com/WRidder/backgrid-demo" title="Fork me on Github"></a></h1>
-
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" id="pluginsettings">
         <div class="panel-heading">
             <h3 class="panel-title">Enable/disable plugins</h3>
         </div>
@@ -60,19 +61,19 @@
                         <div class="panel-body">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" disabled="disabled" id="chkbx-backgrid-paginator" value="backgrid-paginator">Backgrid paginator <span
+                                    <input type="checkbox" id="chkbx-backgrid-paginator" value="backgrid-paginator">Backgrid paginator <span
                                         class="badge">0.3.7</span> (<a target="_blank" href="https://github.com/wyuenho/backgrid-paginator">?</a>)
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" disabled="disabled" id="chkbx-backgrid-filter" value="backgrid-filter">Backgrid filter <span
+                                    <input type="checkbox" id="chkbx-backgrid-filter" value="backgrid-filter">Backgrid filter <span
                                         class="badge">0.3.5</span> (<a target="_blank" href="https://github.com/wyuenho/backgrid-filter">?</a>)
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" disabled="disabled" id="chkbx-backgrid-selectall" value="backgrid-selectall">Backgrid Select all <span
+                                    <input type="checkbox" id="chkbx-backgrid-select-all" value="backgrid-select-all">Backgrid Select all <span
                                         class="badge">0.3.5</span> (<a target="_blank" href="https://github.com/wyuenho/backgrid-select-all">?</a>)
                                 </label>
                             </div>
@@ -119,7 +120,8 @@
             <button type="button" class="btn btn-lg btn-warning" disabled="disabled">Log settings</button>
         </div>
     </div>
-    <div id="grid"></div>
+    <hr/>
+    <div id="grid-container"></div>
 </div>
 
 <!-- Main js file -->
