@@ -29,12 +29,12 @@ var pluginSettings = {
 	// Official backgrid plugins
 	"backgrid-paginator": true,
 	"backgrid-filter": true,
-	"backgrid-select-all": false,
+	"backgrid-select-all": true,
 
 	// Un-official backgrid plugins
 	"backgrid-columnmanager": true,
 	"backgrid-grouped-columns": true,
-	"backgrid-sizeable-columns": false,
+	"backgrid-sizeable-columns": true,
 	"backgrid-orderable-columns": false
 };
 
@@ -90,31 +90,40 @@ function getColumnCollection() {
 		},
 		"id": {
 			width: 50,
-			nesting: ["General"]
+			nesting: ["General"],
+			resizeable: false
 		},
 		"name": {
-			width: 100,
-			nesting: ["General"]
+			width: "*",
+			nesting: ["General"],
+			resizeable: false,
+			orderable: true
 		},
 		"pop": {
 			width: 100,
-			nesting: ["Custom", "numbers"]
+			nesting: ["Custom", "numbers"],
+			resizeable: true,
+			orderable: true
 		},
 		"percentage": {
 			width: 100,
-			nesting: ["Custom", "numbers"]
+			nesting: ["Custom", "numbers"],
+			resizeable: true
 		},
 		"date": {
 			width: 100,
-			nesting: ["Custom"]
+			nesting: ["Custom"],
+			resizeable: true
 		},
 		"url": {
-			width: "*",
-			nesting: ["Custom"]
+			width: "150",
+			nesting: ["Custom"],
+			resizeable: true
 		},
-		"columnmanger-header": {
+		"columnmanager-header": {
 			width: "58",
-			nesting: []
+			nesting: [],
+			resizeable: false
 		}
 	};
 
@@ -178,12 +187,21 @@ function getColumnCollection() {
 		for (var j = 0; j < columnDefinition.length; j++) {
 			var column = columnDefinition[j];
 			if (_.has(extraSettings, column.name)) {
-				column.nesting = extraSettings[column.name].width;
+				column.nesting = extraSettings[column.name].nesting;
+				column.resizeable = extraSettings[column.name].resizeable;
+				column.width = extraSettings[column.name].width;
 			}
 		}
 	}
 
 	if (pluginSettings["backgrid-orderable-columns"]) {
+		for (var j = 0; j < columnDefinition.length; j++) {
+			var columno = columnDefinition[j];
+			if (_.has(extraSettings, columno.name)) {
+				columno.orderable = extraSettings[columno.name].orderable;
+			}
+		}
+
 		var columnCollection = Backgrid.Columns.extend({
 			sortKey: "position",
 			comparator: function(item) {

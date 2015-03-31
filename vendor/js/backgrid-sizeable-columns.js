@@ -36,6 +36,7 @@
 
       // Attach event listeners once on render
       this.listenTo(this.grid.header, "backgrid:header:rendered", this.render);
+      this.listenTo(this.grid.columns, "change:renderable", this.render);
       this.listenTo(this.grid.columns, "width:auto", this.setWidthAuto);
       this.listenTo(this.grid.columns, "width:fixed", this.setWidthFixed);
       this.listenTo(this.grid, "backgrid:refresh", this.setColToActualWidth);
@@ -67,6 +68,21 @@
           }
         }
       });
+
+			// Add data attribute to column cells
+			if (view.grid.header.headerRows) {
+				_.each(view.grid.header.headerRows, function(row) {
+					_.each(row.cells, function(cell) {
+						cell.$el.attr("data-column-cid", cell.column.cid);
+					});
+				});
+			}
+			else {
+				_.each(view.grid.header.row.cells, function(cell) {
+					cell.$el.attr("data-column-cid", cell.column.cid);
+				});
+			}
+
 
       // Trigger event
       view.grid.collection.trigger("backgrid:colgroup:changed");
@@ -183,11 +199,11 @@
       _.each(view.headerElements, function (columnEl, index) {
         // Get matching col element
         var $column = $(columnEl);
-        var $col = view.sizeAbleColumns.$el.find("col").eq(index);
-        var columnModel = view.columns.get({ cid: $col.data("column-cid")});
+				var columnModelCid = $column.data("column-cid");
+        var $col = view.sizeAbleColumns.$el.find("col[data-column-cid=" + columnModelCid + "]");
+        var columnModel = view.columns.get({ cid: columnModelCid});
 
-        if (columnModel.get("resizeable") &&
-          (typeof columnModel.get("renderable") == "undefined" || columnModel.get("renderable"))) {
+        if (columnModel && columnModel.get("resizeable")) {
           // Create helper elements
           var $resizeHandler = $("<div></div>")
             .addClass("resizeHandler")
@@ -388,7 +404,7 @@
     /**
      * Find the current header elements and stores them
      */
-    setHeaderElements: function () {
+/*    setHeaderElements: function () {
       var view = this;
       var $headerEl = view.grid.header.$el;
       var $rows = $headerEl.children("tr");
@@ -418,7 +434,47 @@
           return parseInt($(lhs).offset().left, 10) - parseInt($(rhs).offset().left, 10);
         });
       }
-    }
+
+			// Filter elements
+			view.headerElements = _.filter(view.headerElements, function(headerElement) {
+				return $(headerElement).hasClass("renderable");
+			});
+    }*/
+		setHeaderElements: function () {
+			var self = this;
+			var rows = self.grid.header.headerRows || [self.grid.header.row];
+			self.headerCells = [];
+
+			// Loop all rows
+			_.each(rows, function (row) {
+				// Loop cells of row
+				_.each(row.cells, function (cell) {
+					var columnModel = self.columns.get({cid: cell.column.cid});
+					if (!_.isEmpty(columnModel)) {
+						self.headerCells.push({
+							$el: cell.$el,
+							el: cell.el,
+							column: columnModel
+						});
+					}
+				});
+			});
+
+			// Sort cells
+			var headerCells = _.sortBy(self.headerCells, function (cell) {
+				return self.columns.indexOf(cell.column);
+			});
+
+			// Filter cells
+			self.headerCells = _.filter(headerCells, function(cell) {
+				return cell.column.get("renderable") === true ||
+					typeof cell.column.get("renderable") === "undefined"
+			});
+
+			self.headerElements = _.map(self.headerCells, function (cell) {
+				return cell.el;
+			});
+		}
   });
 
   /**

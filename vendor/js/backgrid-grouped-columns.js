@@ -110,11 +110,15 @@
           });
 
           // Add main column
-          rows[colNesting.length].push(_.extend({
+          /*rows[colNesting.length].push(_.extend({
             attributes: {
               colspan: 1,
               rowspan: rowAmount - colNesting.length
-            }}, column.toJSON()));
+            }}, column.toJSON()));*/
+					rows[colNesting.length].push(column.set("attributes", {
+						colspan: 1,
+						rowspan: rowAmount - colNesting.length
+					}));
 
           // Update nesting
           lastNesting = colNestingIndex;
@@ -124,11 +128,16 @@
           lastNesting = [];
 
           // Create column definition attributes and add to rows
-          rows[0].push(_.extend({
+          /*rows[0].push(_.extend({
             attributes: {
               colspan: 1,
               rowspan: rowAmount
-            }}, column.toJSON()));
+            }}, column.toJSON()));*/
+
+					rows[0].push(column.set("attributes", {
+              colspan: 1,
+              rowspan: rowAmount
+            }));
         }
       });
 

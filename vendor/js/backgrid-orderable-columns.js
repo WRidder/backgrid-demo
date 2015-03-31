@@ -390,35 +390,41 @@
      * Finds and saves current column header elements
      * @private
      */
-    setHeaderElements: function () {
-      var self = this;
-      var rows = self.header.headerRows || [self.header.row];
-      self.headerCells = [];
+		setHeaderElements: function () {
+			var self = this;
+			var rows = self.header.headerRows || [self.header.row];
+			self.headerCells = [];
 
-      // Loop all rows
-      _.each(rows, function (row) {
-        // Loop cells of row
-        _.each(row.cells, function (cell) {
-          var columnModel = self.columns.get({cid: cell.column.cid});
-          if (!_.isEmpty(columnModel)) {
-            self.headerCells.push({
-              $el: cell.$el,
-              el: cell.el,
-              column: columnModel
-            });
-          }
-        });
-      });
+			// Loop all rows
+			_.each(rows, function (row) {
+				// Loop cells of row
+				_.each(row.cells, function (cell) {
+					var columnModel = self.columns.get({cid: cell.column.cid});
+					if (!_.isEmpty(columnModel)) {
+						self.headerCells.push({
+							$el: cell.$el,
+							el: cell.el,
+							column: columnModel
+						});
+					}
+				});
+			});
 
-      // Sort cells
-      self.headerCells = _.sortBy(self.headerCells, function (cell) {
-        return self.columns.indexOf(cell.column);
-      });
+			// Sort cells
+			var headerCells = _.sortBy(self.headerCells, function (cell) {
+				return self.columns.indexOf(cell.column);
+			});
 
-      self.headerElements = _.map(self.headerCells, function (cell) {
-        return cell.el;
-      });
-    },
+			// Filter cells
+			self.headerCells = _.filter(headerCells, function(cell) {
+				return cell.column.get("renderable") === true ||
+					typeof cell.column.get("renderable") === "undefined"
+			});
+
+			self.headerElements = _.map(self.headerCells, function (cell) {
+				return cell.el;
+			});
+		},
 
     /**
      * Adds a drag hook
