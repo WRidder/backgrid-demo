@@ -29,11 +29,11 @@ var pluginSettings = {
 	// Official backgrid plugins
 	"backgrid-paginator": true,
 	"backgrid-filter": true,
-	"backgrid-select-all": true,
+	"backgrid-select-all": false,
 
 	// Un-official backgrid plugins
 	"backgrid-columnmanager": true,
-	"backgrid-grouped-columns": false,
+	"backgrid-grouped-columns": true,
 	"backgrid-sizeable-columns": false,
 	"backgrid-orderable-columns": false
 };
@@ -84,7 +84,7 @@ setCheckboxValues();
 function getColumnCollection() {
 	var extraSettings= {
 		"select-column": {
-			nesting: ["test"],
+			nesting: [],
 			width: 50,
 			resizeAble: false
 		},
@@ -111,6 +111,10 @@ function getColumnCollection() {
 		"url": {
 			width: "*",
 			nesting: ["Custom"]
+		},
+		"columnmanger-header": {
+			width: "58",
+			nesting: []
 		}
 	};
 
@@ -153,6 +157,7 @@ function getColumnCollection() {
 
 	if (pluginSettings["backgrid-columnmanager"]) {
 		columnDefinition.push({
+			name: "columnmanager-header",
 			label: "visibility",
 			cell: "boolean",
 			alwaysVisible: true,
@@ -257,7 +262,7 @@ function renderGrid() {
 	});
 
 	// Render the grid
-	var $grid = $("<div id='#grid'></div>").appendTo("#grid-container").append(grid.render().el);
+	var $grid = $("<div id='grid'></div>").appendTo("#grid-container").append(grid.render().el);
 
 	// backgrid-paginator enabled?
 	if (pluginSettings["backgrid-paginator"]) {

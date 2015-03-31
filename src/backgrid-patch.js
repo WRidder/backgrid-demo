@@ -81,7 +81,7 @@ var BackgridHeaderRenderMethod = function () {
 };
 
 // Backgrid patch
-Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
+//Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
 Backgrid.Header.prototype.initialize = BackgridHeaderInitializeMethod;
 Backgrid.Header.prototype.createHeaderRow = BackgridHeaderCreateHeaderRowMethod;
 Backgrid.Header.prototype.render = BackgridHeaderRenderMethod;

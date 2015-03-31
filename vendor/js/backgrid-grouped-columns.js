@@ -24,12 +24,10 @@
       group: true
     },
     columnLayout: null,
-    columnCollection: Backgrid.Columns,
     headerRows: [],
 
     initialize: function (options) {
       _.extend(this, this.defaults, options.headerOptions || {});
-			console.log("grouped options: ", options);
 
       this.columns = options.columns;
       if (!(this.columns instanceof Backbone.Collection)) {
@@ -70,7 +68,7 @@
       var lastNesting = [];
       self.columns.each(function (column) {
         var colNesting = (self.group) ? column.get("nesting") : [];
-        var renderable = (typeof column.get("renderable") == "undefined" || column.get("renderable"));
+        var renderable = (typeof column.get("renderable") === "undefined" || column.get("renderable"));
         if (colNesting && !_.isEmpty(colNesting) && renderable) {
           // Add index to colname for proper comparison for unique and different entries
           var colNestingIndex = _.map(colNesting, function (nest, ind) {
@@ -144,6 +142,13 @@
         self.$el.append(row.render().$el);
         self.headerRows.push(row);
       });
+
+			// Set attributes. Loop cells of rows.
+			_.each(self.headerRows, function(headerRow) {
+				_.each(headerRow.cells, function(cell) {
+					cell.$el.prop(cell.column.get("attributes"));
+				});
+			});
 
       // Attach row object to object to ensure compatibility with other plugins.
       self.row = _.last(self.headerRows);
