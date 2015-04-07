@@ -118,10 +118,10 @@
           });
 
           // Add main column
-					rows[colNesting.length].push(column.set("attributes", {
-						colspan: 1,
-						rowspan: rowAmount - colNesting.length
-					}));
+          rows[colNesting.length].push(column.set("attributes", {
+            colspan: 1,
+            rowspan: rowAmount - colNesting.length
+          }));
 
           // Update nesting
           lastNesting = colNestingIndex;
@@ -131,7 +131,7 @@
           lastNesting = [];
 
           // Create column definition attributes and add to rows
-					rows[0].push(column.set("attributes", {
+          rows[0].push(column.set("attributes", {
               colspan: 1,
               rowspan: rowAmount
             }));
@@ -148,13 +148,13 @@
         self.$el.append(row.render().$el);
         self.headerRows.push(row);
       });
-
-			// Set attributes. Loop cells of rows.
-			_.each(self.headerRows, function(headerRow) {
-				_.each(headerRow.cells, function(cell) {
-					cell.$el.prop(cell.column.get("attributes"));
-				});
-			});
+      
+      // Set attributes. Loop cells of rows.
+      _.each(self.headerRows, function(headerRow) {
+        _.each(headerRow.cells, function(cell) {
+          cell.$el.prop(cell.column.get("attributes"));
+        });
+      });
 
       // Attach row object to object to ensure compatibility with other plugins.
       self.row = _.last(self.headerRows);

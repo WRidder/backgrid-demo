@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("_"), require("Backbone"), require("Backgrid"));
+		module.exports = factory(require("_"), require("jQuery"), require("Backbone"), require("Backgrid"));
 	else if(typeof define === 'function' && define.amd)
-		define(["_", "Backbone", "Backgrid"], factory);
+		define(["_", "jQuery", "Backbone", "Backgrid"], factory);
 	else if(typeof exports === 'object')
-		exports["Backgrid.Extension.ColumnManager"] = factory(require("_"), require("Backbone"), require("Backgrid"));
+		exports["Backgrid.Extension.ColumnManager"] = factory(require("_"), require("jQuery"), require("Backbone"), require("Backgrid"));
 	else
-		root["Backgrid.Extension.ColumnManager"] = factory(root["_"], root["Backbone"], root["Backgrid"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__) {
+		root["Backgrid.Extension.ColumnManager"] = factory(root["_"], root["jQuery"], root["Backbone"], root["Backgrid"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,8 +64,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// Dependencies
 	var _ = __webpack_require__(1);
-	var Backbone = __webpack_require__(2);
-	var Backgrid = __webpack_require__(3);
+	var $ = __webpack_require__(2);
+	var Backbone = __webpack_require__(3);
+	var Backgrid = __webpack_require__(4);
 
 	/**
 	 * Manages visibility of columns.
@@ -263,7 +264,6 @@ return /******/ (function(modules) { // webpackBootstrap
 				this.stopPropagation(e);
 			}
 			this.columnManager.toggleColumnVisibility(this.column);
-			//this.column.set("renderable", !this.column.get("renderabl"));
 		},
 
 		/**
@@ -390,7 +390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @class Backgrid.Extension.ColumnManagerVisibilityControl
 	 * @extends Backbone.View
-	*/
+	 */
 	Backgrid.Extension.ColumnManagerVisibilityControl = Backbone.View.extend({
 		/**
 		 * @property tagName
@@ -574,6 +574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				}
 				e.cancelBubble = true;
 			}
+
 			// Don't do anything if already open
 			if(this.isOpen) {
 				return;
@@ -685,6 +686,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ }
 /******/ ])
