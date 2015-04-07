@@ -17,31 +17,6 @@
 /**
  * Tested with backgrid 0.3.5
  */
-var BackgridHeaderCellRenderMethod = function () {
-  this.$el.empty();
-  var column = this.column;
-  var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
-  var label;
-  if(sortable){
-    label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
-  } else {
-    label = document.createTextNode(column.get("label"));
-  }
-
-  this.$el.append(label);
-  this.$el.addClass(column.get("name"));
-  this.$el.attr("data-column-cid", column.cid);
-  this.$el.addClass(column.get("direction"));
-  if (column.get("attributes")) {
-    this.$el.attr(column.get("attributes"));
-  }
-  this.delegateEvents();
-  return this;
-};
-
-/**
- * Tested with backgrid 0.3.5
- */
 var BackgridHeaderInitializeMethod = function (options) {
   this.columns = options.columns;
   if (!(this.columns instanceof Backbone.Collection)) {
@@ -81,7 +56,6 @@ var BackgridHeaderRenderMethod = function () {
 };
 
 // Backgrid patch
-//Backgrid.HeaderCell.prototype.render = BackgridHeaderCellRenderMethod;
 Backgrid.Header.prototype.initialize = BackgridHeaderInitializeMethod;
 Backgrid.Header.prototype.createHeaderRow = BackgridHeaderCreateHeaderRowMethod;
 Backgrid.Header.prototype.render = BackgridHeaderRenderMethod;

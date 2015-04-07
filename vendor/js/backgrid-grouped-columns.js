@@ -98,7 +98,11 @@
                 colspan: 1,
                 rowspan: 1
               },
-              childColumns: [column.get("name")]
+              childColumns: [{
+                name: column.get("name"),
+                cid: column.cid,
+                column: column
+              }]
             }, columnJSON));
           });
 
@@ -106,15 +110,14 @@
           _.each(overlap, function (element, index) {
             var lastElement = _.last(rows[index]);
             lastElement.attributes.colspan++;
-            lastElement.childColumns.push(column.get("name"));
+            lastElement.childColumns.push({
+              name: column.get("name"),
+              cid: column.cid,
+              column: column
+            });
           });
 
           // Add main column
-          /*rows[colNesting.length].push(_.extend({
-            attributes: {
-              colspan: 1,
-              rowspan: rowAmount - colNesting.length
-            }}, column.toJSON()));*/
 					rows[colNesting.length].push(column.set("attributes", {
 						colspan: 1,
 						rowspan: rowAmount - colNesting.length
@@ -128,12 +131,6 @@
           lastNesting = [];
 
           // Create column definition attributes and add to rows
-          /*rows[0].push(_.extend({
-            attributes: {
-              colspan: 1,
-              rowspan: rowAmount
-            }}, column.toJSON()));*/
-
 					rows[0].push(column.set("attributes", {
               colspan: 1,
               rowspan: rowAmount
