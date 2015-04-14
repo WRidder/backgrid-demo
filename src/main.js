@@ -210,14 +210,11 @@ function getColumnCollection() {
         columno.orderable = extraSettings[columno.name].orderable;
       }
     }
+  }
 
-    var columns = new Backgrid.Extension.OrderableColumns.orderableColumnCollection(columnDefinition);
-    columns.setPositions().sort();
-    return columns;
-  }
-  else {
-    return new Backgrid.Columns(columnDefinition);
-  }
+  var columns = new Backgrid.Extension.OrderableColumns.orderableColumnCollection(columnDefinition);
+  columns.setPositions().sort();
+  return columns;
 }
 
 // Render the grid
