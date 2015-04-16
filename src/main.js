@@ -533,10 +533,12 @@ function renderGrid() {
       $grid.find('thead').before(orderHandler.render().el);
     }
   }
+
+  return grid;
 }
 
 // Init
-renderGrid();
+var gridInstance = renderGrid();
 
 // Watch for changes
 // On change, change query string containing only activated plugins
@@ -559,4 +561,31 @@ $("#btnLogStored").click(function() {
 
 $("#btnClearStored").click(function() {
   localStorage.clear();
+});
+
+var indx = 1;
+$("#btnAddColumn").click(function() {
+  gridInstance.columns.add({
+    name: "rndm" + indx,
+    label: "Rndm #" + indx++,
+    cell: "string",
+    resizeable: true,
+    orderable: true,
+    nesting: ["random"],
+    width: 120,
+    displayOrder: 8+indx
+  });
+});
+
+$("#btnRemoveColumn").click(function() {
+  var rndmColumn  = gridInstance.columns.find(function(column) {
+    return column.get("name").search("rndm") > -1;
+  });
+
+  if (rndmColumn) {
+    gridInstance.columns.remove(rndmColumn);
+  }
+  else {
+    console.warn("No random column available for removal");
+  }
 });
