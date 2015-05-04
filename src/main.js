@@ -463,8 +463,12 @@ function getDataCollection() {
 
 // Render the grid
 function renderGrid(gridContainerId) {
+  var gridObjects = {
+    elId: gridContainerId
+  };
+
   // Empty DOM
-  $("#grid-container").empty();
+  $(gridContainerId).empty();
 
   // Get column collection
   var columnCollection = getColumnCollection();
@@ -486,13 +490,13 @@ function renderGrid(gridContainerId) {
   if (pluginSettings["backgrid-filter"]) {
     // Initialize a client-side filter to filter on the client
     // mode pageable collection's cache.
-    var filter = new Backgrid.Extension.ClientSideFilter({
+    var filter = gridObjects.filter = new Backgrid.Extension.ClientSideFilter({
       collection: dataCollection,
       fields: ['name']
     });
 
     // Render the filter
-    var $filterContainer = $("<div id='filter-container'></div>").appendTo($("#grid-container"));
+    var $filterContainer = $("<div id='filter-container'></div>").appendTo($(gridContainerId));
     $filterContainer.append(filter.render().el);
 
     // Add some space to the filter and move it to the right
@@ -505,7 +509,7 @@ function renderGrid(gridContainerId) {
   }
 
   // Initialize a new Grid instance
-  var grid = new Backgrid.Grid({
+  var grid = gridObjects.grid = new Backgrid.Grid({
     header: Header,
     columns: columnCollection,
     collection: dataCollection
@@ -553,12 +557,12 @@ function renderGrid(gridContainerId) {
     }
   }
 
-  return grid;
+  return gridObjects;
 }
 
 // Init
-var gridInstance1 = renderGrid("#grid-container1");
-var gridInstance2 = renderGrid("#grid-container2");
+var gridObjects1 = renderGrid("#grid-container1");
+var gridObjects2 = renderGrid("#grid-container2");
 
 // Watch for changes
 // On change, change query string containing only activated plugins
@@ -613,5 +617,14 @@ $("#btnRemoveColumn").click(function() {
 });
 
 $("#btnRemoveSecondGrid").click(function() {
-  gridInstance2.remove();
+  // Remove filter if present
+  if (gridObjects2.filter) {
+    gridObjects2.filter.remove();
+  }
+
+  // Remove grid instance
+  gridObjects2.grid.remove();
+
+  // Remove grid element
+  $(gridObjects2.elId).remove();
 });
