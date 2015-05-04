@@ -30,17 +30,17 @@
     "backbone": "^1.1.2",
     "backbone.paginator": "2.0.2",
     "backgrid": "0.3.5",
-    "backgrid-columnmanager": "0.2.0",
+    "backgrid-columnmanager": "0.2.2",
     "backgrid-filter": "0.3.5",
-    "backgrid-grouped-columns": "0.1.1",
-    "backgrid-orderable-columns": "0.1.0",
+    "backgrid-grouped-columns": "0.1.4",
+    "backgrid-orderable-columns": "0.1.1",
     "backgrid-paginator": "0.3.7",
     "backgrid-select-all": "^0.3.5",
     "backgrid-sizeable-columns": "0.1.0",
     "bootstrap": "3.3.4",
     "jquery": "1.11.2",
-    "normalize.css": "3.0.2",
-    "underscore": "1.8.2"
+    "normalize.css": "3.0.3",
+    "underscore": "1.8.3"
   },
   "devDependencies": {
     "gulp": "^3.8.11"

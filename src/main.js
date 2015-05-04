@@ -83,8 +83,13 @@ function setCheckboxValues() {
 }
 setCheckboxValues();
 
-// Create column collection
+// Create singleton column collection
+var columnCol;
 function getColumnCollection() {
+  if (columnCol) {
+    return columnCol;
+  }
+
   var extraSettings = {
     "select-column": {
       nesting: [],
@@ -214,16 +219,16 @@ function getColumnCollection() {
 
   var columns = new Backgrid.Extension.OrderableColumns.orderableColumnCollection(columnDefinition);
   columns.setPositions().sort();
+  columnCol = columns;
   return columns;
 }
 
-// Render the grid
-function renderGrid() {
-  // Empty DOM
-  $("#grid-container").empty();
-
-  // Get column collection
-  var columnCollection = getColumnCollection();
+// Create singleton data collection
+var dataCol;
+function getDataCollection() {
+  if (dataCol) {
+    return dataCol;
+  }
 
   // Setup data
   var data = [{
@@ -453,6 +458,20 @@ function renderGrid() {
       mode: "client" // page entirely on the client side
     }) : new Backbone.Collection(data);
 
+  return dataCollection;
+}
+
+// Render the grid
+function renderGrid(gridContainerId) {
+  // Empty DOM
+  $("#grid-container").empty();
+
+  // Get column collection
+  var columnCollection = getColumnCollection();
+
+  // Get data collection
+  var dataCollection = getDataCollection();
+
   // backgrid-columnmanager enabled?
   var colManager;
   if (pluginSettings["backgrid-columnmanager"]) {
@@ -493,7 +512,7 @@ function renderGrid() {
   });
 
   // Render the grid
-  var $grid = $("<div id='grid'></div>").appendTo("#grid-container").append(grid.render().el);
+  var $grid = $("<div></div>").appendTo(gridContainerId).append(grid.render().el);
 
   // backgrid-paginator enabled?
   if (pluginSettings["backgrid-paginator"]) {
@@ -538,7 +557,8 @@ function renderGrid() {
 }
 
 // Init
-var gridInstance = renderGrid();
+var gridInstance1 = renderGrid("#grid-container1");
+var gridInstance2 = renderGrid("#grid-container2");
 
 // Watch for changes
 // On change, change query string containing only activated plugins
@@ -565,7 +585,8 @@ $("#btnClearStored").click(function() {
 
 var indx = 1;
 $("#btnAddColumn").click(function() {
-  gridInstance.columns.add({
+  var columns = getColumnCollection();
+  columns.add({
     name: "rndm" + indx,
     label: "Rndm #" + indx++,
     cell: "string",
@@ -578,12 +599,13 @@ $("#btnAddColumn").click(function() {
 });
 
 $("#btnRemoveColumn").click(function() {
-  var rndmColumn  = gridInstance.columns.find(function(column) {
+  var columns = getColumnCollection();
+  var rndmColumn  = columns.find(function(column) {
     return column.get("name").search("rndm") > -1;
   });
 
   if (rndmColumn) {
-    gridInstance.columns.remove(rndmColumn);
+    columns.remove(rndmColumn);
   }
   else {
     console.warn("No random column available for removal");
