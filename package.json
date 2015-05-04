@@ -30,7 +30,7 @@
     "backbone": "^1.1.2",
     "backbone.paginator": "2.0.2",
     "backgrid": "0.3.5",
-    "backgrid-columnmanager": "0.2.2",
+    "backgrid-columnmanager": "0.2.4",
     "backgrid-filter": "0.3.5",
     "backgrid-grouped-columns": "0.1.4",
     "backgrid-orderable-columns": "0.1.1",

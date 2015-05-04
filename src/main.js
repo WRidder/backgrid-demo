@@ -611,3 +611,7 @@ $("#btnRemoveColumn").click(function() {
     console.warn("No random column available for removal");
   }
 });
+
+$("#btnRemoveSecondGrid").click(function() {
+  gridInstance2.remove();
+});
