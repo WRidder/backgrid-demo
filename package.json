@@ -37,6 +37,7 @@
     "backgrid-paginator": "0.3.7",
     "backgrid-select-all": "^0.3.5",
     "backgrid-sizeable-columns": "0.1.0",
+    "backgrid-advanced-filter": "0.0.1",
     "bootstrap": "3.3.4",
     "jquery": "1.11.2",
     "normalize.css": "3.0.3",

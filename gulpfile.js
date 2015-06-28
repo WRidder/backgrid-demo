@@ -20,7 +20,8 @@ gulp.task("move-library", function(cb) {
 		"node_modules/backgrid-columnmanager/lib/Backgrid.ColumnManager.js",
 		"node_modules/backgrid-grouped-columns/backgrid-grouped-columns.js",
 		"node_modules/backgrid-sizeable-columns/backgrid-sizeable-columns.js",
-		"node_modules/backgrid-orderable-columns/backgrid-orderable-columns.js"
+		"node_modules/backgrid-orderable-columns/backgrid-orderable-columns.js",
+		"node_modules/backgrid-advanced-filter/lib/Backgrid.AdvancedFilter.js"
 	]).pipe(gulp.dest("vendor/js"));
 
 	// Vendor css
@@ -34,7 +35,8 @@ gulp.task("move-library", function(cb) {
 		"node_modules/backgrid-columnmanager/lib/Backgrid.ColumnManager.css",
 		"node_modules/backgrid-grouped-columns/backgrid-grouped-columns.css",
 		"node_modules/backgrid-sizeable-columns/backgrid-sizeable-columns.css",
-		"node_modules/backgrid-orderable-columns/backgrid-orderable-columns.css"
+		"node_modules/backgrid-orderable-columns/backgrid-orderable-columns.css",
+		"node_modules/backgrid-advanced-filter/lib/Backgrid.AdvancedFilter.css"
 	]).pipe(gulp.dest("vendor/css"));
 	cb();
 });

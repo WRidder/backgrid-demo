@@ -31,14 +31,15 @@ var qs = (function (a) {
 var pluginSettings = {
   // Official backgrid plugins
   "backgrid-paginator": true,
-  "backgrid-filter": true,
+  "backgrid-filter": false,
   "backgrid-select-all": true,
 
   // Un-official backgrid plugins
   "backgrid-columnmanager": true,
   "backgrid-grouped-columns": true,
   "backgrid-sizeable-columns": true,
-  "backgrid-orderable-columns": true
+  "backgrid-orderable-columns": true,
+  "backgrid-advanced-filter": true
 };
 
 function initSettings() {
@@ -151,15 +152,18 @@ function getColumnCollection() {
   }, {
     name: "name",
     label: "Name",
-    cell: "string" // This is converted to "StringCell" and a corresponding class in the Backgrid package namespace is looked up
+    cell: "string", // This is converted to "StringCell" and a corresponding class in the Backgrid package namespace is looked up
+    filterType: "string"
   }, {
     name: "pop",
     label: "Population",
-    cell: "integer" // An integer cell is a number cell that displays humanized integers
+    cell: "integer", // An integer cell is a number cell that displays humanized integers
+    filterType: "integer"
   }, {
     name: "percentage",
     label: "% of World Population",
-    cell: "number" // A cell type for floating point value, defaults to have a precision 2 decimal numbers
+    cell: "number", // A cell type for floating point value, defaults to have a precision 2 decimal numbers
+    filterType: "number"
   }, {
     name: "date",
     label: "Date",
@@ -486,8 +490,30 @@ function renderGrid(gridContainerId) {
     });
   }
 
+  // backgrid-advanced-filter enabled?
+  if (pluginSettings["backgrid-advanced-filter"]) {
+    // Initialize a client-side filter to filter on the client
+    // mode pageable collection's cache.
+    var advancedFilter = gridObjects.advancedFilter = new Backgrid.Extension.AdvancedFilter.Main({
+      collection: dataCollection,
+      columns: columnCollection
+    });
+
+    // Render the filter
+    var $advancedFilterContainer = $("<div class='advanced-filter-container'></div>").appendTo($(gridContainerId));
+    $advancedFilterContainer.append(advancedFilter.render().el);
+
+    // Bind to save event as per example
+    advancedFilter.on("filter:save", function(filterId, filterModel) {
+      alert("Filter saved, check console for export");
+      console.log("Currently active filter saved. ");
+      console.log(" >> Filter model: ", filterModel);
+      console.log(" >> Filter export as object: ", filterModel.exportFilter("mongo"));
+      console.log(" >> Filter export as string: ", filterModel.exportFilter("mongo", true));
+    });
+  }
+  else if (pluginSettings["backgrid-filter"]) {
   // backgrid-filter enabled?
-  if (pluginSettings["backgrid-filter"]) {
     // Initialize a client-side filter to filter on the client
     // mode pageable collection's cache.
     var filter = gridObjects.filter = new Backgrid.Extension.ClientSideFilter({
