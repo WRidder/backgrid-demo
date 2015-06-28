@@ -1,4 +1,11 @@
 /*
+Common
+*/
+div.advancedfilter .clearer {
+    clear: both;
+}
+
+/*
 Filter selector
 */
 div.advancedfilter-selector {
@@ -204,7 +211,7 @@ div.advancedfilter-editor > .filter-editor {
     margin-right: 50px;
 }
 
-div.advancedfilter-editor > .filter-editor .clearer{
+div.advancedfilter-editor .clearer {
     clear: both;
 }
 

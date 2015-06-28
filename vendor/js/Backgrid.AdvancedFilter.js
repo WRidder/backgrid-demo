@@ -1873,7 +1873,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "<button class=\"reset\"><%-resetText%></button>" +
 	      "<button class=\"cancel\"><%-cancelText%></button>" +
 	      "<button class=\"save\"><%-saveText%></button>" +
-	    "</div>"
+	    "</div>" +
+	    "<div class=\"clearer\"></div>"
 	  ),
 	  events: {
 	    "click button.reset": "resetFilter",
