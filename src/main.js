@@ -495,8 +495,11 @@ function renderGrid(gridContainerId) {
 
   // backgrid-advanced-filter enabled?
   if (pluginSettings["backgrid-advanced-filter"]) {
-    var $info = $("<hr><p><strong>Backgrid advanced-filter information:</strong><br/>" +
-        "Filter will be applied when 'apply' is clicked. The 'save' button will save the filter and output the result to the console." +
+    var $info = $("<hr><p><strong>Advanced-filter notes:</strong><br/>" +
+        "Filter will be applied when 'apply' is clicked. The 'save' button will save the filter (session only in this demo) and output the result to the console. " +
+        "Please note that the database is hosted through a free heroku/mongolab instance. This means that the initial filter" +
+        "action might take a while because the instance might have to spin up when it has been idle for a while. Reference " +
+        "backend implementation can be found <a href\"https://github.com/WRidder/backgrid-demo-server\">here</a>." +
         "</p><hr>");
 
     // Initialize a client-side filter to filter on the client
