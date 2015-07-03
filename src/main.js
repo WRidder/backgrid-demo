@@ -519,6 +519,7 @@ function renderGrid(gridContainerId) {
       console.log(" >> Filter export as string: ", filterModel.exportFilter("mongo", true));
     });
 
+    var dataFiltered = false;
     advancedFilter.on("filter:apply", _.debounce(function(filterId, filterModel) {
       var requestFilter = filterModel.exportFilter("mongo", true);
       var encodedFilter = encodeURIComponent(requestFilter);
@@ -543,16 +544,14 @@ function renderGrid(gridContainerId) {
           dataCollection.reset(resultData);
         }
         $(gridContainerId).fadeTo( "fast", 1);
+        dataFiltered = true;
       });
     }), 2000, true);
 
     // Reset data on filter close and/or filter loaded
-    advancedFilter.on("filter:close filter:loaded filter:remove", _.debounce(function(filterId, filterModel) {
-      console.log(filterModel);
-      var requestFilter = filterModel instanceof Backbone.Model ? filterModel.exportFilter("mongo", true) : null;
-
-      if (requestFilter !== "{}") {
-        console.log("Filter closed/loaded/removed resetting data: ", filterModel instanceof Backbone.Model ? filterModel : "");
+    advancedFilter.on("filter:close filter:loaded filter:remove", _.debounce(function() {
+      if (dataFiltered) {
+        console.log("Filter closed/loaded/removed resetting data.");
 
         // Set opacity of grid while loading
         $(gridContainerId).fadeTo( "fast", 0.33 );
@@ -573,6 +572,7 @@ function renderGrid(gridContainerId) {
             dataCollection.reset(resultData);
           }
           $(gridContainerId).fadeTo( "fast", 1);
+          dataFiltered = false;
         });
       }
     }), 2000, true);
