@@ -39,7 +39,7 @@ div.advancedfilter-selector > .filter-label > span.create{
     padding: 0px 10px;
 }
 
-div.advancedfilter-selector > .filter-label span.remove-filter {
+div.advancedfilter-selector > .filter-label span.close-filter-icon {
     cursor: pointer;
     font-weight: bold;
     font-size: 13px;

@@ -715,6 +715,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var self = this;
 	    self.options = _.extend({}, self.defaults, options || {});
 
+	    // Childviews containers
+	    self.childViews = {};
+
 	    // Input argument checking
 	    if (!self.options.filterStateModel ||
 	      !self.options.filterStateModel instanceof Backbone.Model) {
@@ -779,6 +782,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      filterStateModel: self.filterStateModel
 	    });
 	    $container.append(subView.render().$el);
+
+	    // Register childviews
+	    self.childViews[className] = subView;
+	  },
+
+	  /**
+	   * @method remove
+	   * @return {*}
+	   */
+	  remove: function() {
+	    var self = this;
+
+	    // Remove childviews
+	    _.each(self.childViews, function(view) {
+	      view.remove();
+	    });
+
+	    // Invoke original backbone methods
+	    return Backbone.View.prototype.remove.apply(self, arguments);
 	  }
 	});
 
@@ -837,20 +859,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    self.$el.append(self.template());
 
 	    // Add column selector
-	    var columnFilterView = new this.options.ColumnFilterView({
+	    var columnFilterView = self.columnFilterView = new this.options.ColumnFilterView({
 	      filterStateModel: self.filterStateModel,
 	      filter: self.filter
 	    });
 	    self.$el.find(".filter-editor-columnfilter").append(columnFilterView.render().$el);
 
 	    // Add attribute filter view
-	    var addAttributeFilterView = new this.options.NewFilterButtonView({
+	    var addAttributeFilterView = self.addAttributeFilterView = new this.options.NewFilterButtonView({
 	      filterStateModel: self.filterStateModel,
 	      filter: self.filter
 	    });
 	    self.$el.find(".filter-editor-addremove").append(addAttributeFilterView.render().$el);
 
-	    var removeAttributeFilterView = new this.options.RemoveFilterButtonView({
+	    var removeAttributeFilterView = self.removeAttributeFilterView = new this.options.RemoveFilterButtonView({
 	      filterStateModel: self.filterStateModel,
 	      filter: self.filter
 	    });
@@ -877,6 +899,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      self.$el.removeClass("valid");
 	      self.$el.addClass("invalid");
 	    }
+	  },
+
+	  /**
+	   * @method remove
+	   * @return {*}
+	   */
+	  remove: function() {
+	    var self = this;
+
+	    // Remove childview
+	    self.columnFilterView.remove();
+	    self.addAttributeFilterView.remove();
+	    self.removeAttributeFilterView.remove();
+
+	    // Invoke original backbone methods
+	    return Backbone.View.prototype.remove.apply(self, arguments);
 	  }
 	});
 
@@ -951,7 +989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Loop filters
 	      if (af.get("attributeFilters").length > 0) {
 	        af.get("attributeFilters").each(function(attributeFilter) {
-	          var filterView = new Backgrid.Extension.AdvancedFilter.SubComponents.FilterView({
+	          var filterView = self.childView = new Backgrid.Extension.AdvancedFilter.SubComponents.FilterView({
 	            filterStateModel: self.filterStateModel,
 	            attributeFilter: attributeFilter
 	          });
@@ -970,6 +1008,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return self;
+	  },
+
+	  /**
+	   * @method remove
+	   * @return {*}
+	   */
+	  remove: function() {
+	    var self = this;
+
+	    // Remove childview
+	    if (self.childView) {
+	      self.childView.remove();
+	    }
+
+	    // Invoke original backbone methods
+	    return Backbone.View.prototype.remove.apply(self, arguments);
 	  }
 	});
 
@@ -1164,6 +1218,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var _ = __webpack_require__(2);
 	var Backgrid = __webpack_require__(5);
+	var FilterTypes = Backgrid.Extension.AdvancedFilter.FilterOptions.Types;
+
 	Backgrid.Extension.AdvancedFilter.FilterParsers = {};
 
 	/**
@@ -1191,12 +1247,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // Parse filters
 	  var result = [];
 	  _.each(validAttributeFilters, function(attrFilter) {
-	    result.push(self.parseAttributeFilter(attrFilter.toJSON()));
+	    var attrFilterJson = attrFilter.toJSON();
+
+	    // Parse and post-process values
+	    var typeFilter = FilterTypes[attrFilterJson.type];
+	    var processedValue;
+	    if (_.isArray(attrFilterJson.value)) {
+	      processedValue = [];
+	      _.each(attrFilterJson.value, function(val) {
+	        processedValue.push(typeFilter.postProcessor(typeFilter.parser(val)));
+	      });
+	    }
+	    else {
+	      processedValue = typeFilter.postProcessor(typeFilter.parser(attrFilterJson.value));
+	    }
+
+	    // Create parse object
+	    var attrFilterToParse = {
+	      matcher: attrFilterJson.matcher,
+	      column: attrFilterJson.column,
+	      type: attrFilterJson.type,
+	      value: processedValue
+	    };
+
+	    // Create style filter
+	    result.push(self.parseAttributeFilter(attrFilterToParse));
 	  });
 
-	  return {
-	    "$and": result
-	  };
+	  if (_.isEmpty(result)) {
+	    return {};
+	  }
+	  else {
+	    return {
+	      "$and": result
+	    };
+	  }
 	};
 
 	/**
@@ -1226,19 +1311,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case "sw":
 	      // Starts with
 	      result[attributeFilter.column] = {
-	        "$regex": "^" + attributeFilter.value
+	        "$regex": "(?i)^" + attributeFilter.value
 	      };
 	      break;
 	    case "ew":
 	      // Ends with
 	      result[attributeFilter.column] = {
-	        "$regex": attributeFilter.value + "$"
+	        "$regex": "(?i)" + attributeFilter.value + "$"
 	      };
 	      break;
 	    case "ct":
 	      // Contains
 	      result[attributeFilter.column] = {
-	        "$regex": attributeFilter.value
+	        "$regex": "(?i)" + attributeFilter.value
 	      };
 	      break;
 
@@ -1311,13 +1396,209 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case "eq":
 	      // Equals
 	      result[attributeFilter.column] = {
-	        "$eq": attributeFilter.value
+	        "$eq": (attributeFilter.type === "string") ? "(?i)" + attributeFilter.value : attributeFilter.value
 	      };
 	      break;
 	    case "neq":
 	      // Does not equal
 	      result[attributeFilter.column] = {
-	        "$neq": attributeFilter.value
+	        "$neq": (attributeFilter.type === "string") ? "(?i)" + attributeFilter.value : attributeFilter.value
+	      };
+	      break;
+	  }
+	  return result;
+	};
+
+	/**
+	 * @class MongoParser
+	 * @constructor
+	 */
+	var SimpleParser = Backgrid.Extension.AdvancedFilter.FilterParsers.SimpleParser = function() {};
+
+	/**
+	 * @method parse
+	 * @return {Object}
+	 */
+	SimpleParser.prototype.parse = function(filter) {
+	  var self = this;
+
+	  // Input argument checking
+	  if (!filter ||
+	    !filter instanceof Backgrid.Extension.AdvancedFilter.FilterModel) {
+	    throw new Error("SimpleParser: No (valid) filter collection provided");
+	  }
+
+	  // Get array of valid filters
+	  var validAttributeFilters = self.getValidOnly(filter);
+
+	  // Parse filters
+	  var result = [];
+	  _.each(validAttributeFilters, function(attrFilter) {
+	    var attrFilterJson = attrFilter.toJSON();
+
+	    // Parse and post-process values
+	    var typeFilter = FilterTypes[attrFilterJson.type];
+	    var processedValue;
+	    if (_.isArray(attrFilterJson.value)) {
+	      processedValue = [];
+	      _.each(attrFilterJson.value, function(val) {
+	        processedValue.push(typeFilter.postProcessor(typeFilter.parser(val)));
+	      });
+	    }
+	    else {
+	      processedValue = typeFilter.postProcessor(typeFilter.parser(attrFilterJson.value));
+	    }
+
+	    // Create parse object
+	    var attrFilterToParse = {
+	      matcher: attrFilterJson.matcher,
+	      column: attrFilterJson.column,
+	      type: attrFilterJson.type,
+	      value: processedValue
+	    };
+
+	    // Create style filter
+	    result.push(self.parseAttributeFilter(attrFilterToParse));
+	  });
+
+	  return result;
+	};
+
+	/**
+	 * @method getValidOnly
+	 * @param {Backgrid.Extension.AdvancedFilter.FilterModel} filter
+	 * @return {Array} valid attribute filter models
+	 * @private
+	 */
+	SimpleParser.prototype.getValidOnly = function(filter) {
+	  // Get attribute filters
+	  var attributeFilters = filter.get("attributeFilters");
+
+	  // Return array of valid filters
+	  return attributeFilters.where({valid: true});
+	};
+
+	/**
+	 * @method parseAttributeFilter
+	 * @param {Object} attributeFilter
+	 * @return {Object} mongo style filter
+	 * @private
+	 */
+	SimpleParser.prototype.parseAttributeFilter = function(attributeFilter) {
+	  var result = {};
+	  switch(attributeFilter.matcher) {
+	    // String only
+	    case "sw":
+	      // Starts with
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "regex",
+	          value: "^" + attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "ew":
+	      // Ends with
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "regex",
+	          value: attributeFilter.value + "$"
+	        }
+	      };
+	      break;
+	    case "ct":
+	      // Contains
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "regex",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+
+	    // Numerical
+	    case "gt":
+	      // Greater than
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "gt",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "gte":
+	      // Greater than or equal
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "gte",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "lt":
+	      // Lower than
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "lt",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "lte":
+	      // Lower than or equal
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "lte",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "bt":
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "bt",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "nbt":
+	      // Outside (x < value1 OR x > value2)
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "nbt",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+
+	    // General
+	    case "eq":
+	      // Equals
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "eq",
+	          value: attributeFilter.value
+	        }
+	      };
+	      break;
+	    case "neq":
+	      // Does not equal
+	      result = {
+	        "column": attributeFilter.column,
+	        "matcher": {
+	          type: "neq",
+	          value: attributeFilter.value
+	        }
 	      };
 	      break;
 	  }
@@ -1873,6 +2154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "<button class=\"reset\"><%-resetText%></button>" +
 	      "<button class=\"cancel\"><%-cancelText%></button>" +
 	      "<button class=\"save\"><%-saveText%></button>" +
+	      "<button class=\"apply\"><%-applyText%></button>" +
 	    "</div>" +
 	    "<div class=\"clearer\"></div>"
 	  ),
@@ -1880,6 +2162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    "click button.reset": "resetFilter",
 	    "click button.cancel": "cancelFilter",
 	    "click button.save": "saveFilter",
+	    "click button.apply": "applyFilter",
 	    "click button.remove": "removeFilter"
 	  },
 
@@ -1887,6 +2170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    resetText: "Reset",
 	    cancelText: "Cancel",
 	    saveText: "Save",
+	    applyText: "Apply",
 	    removeText: "Remove"
 	  },
 
@@ -1927,6 +2211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resetText: self.options.resetText,
 	        cancelText: self.options.cancelText,
 	        saveText: self.options.saveText,
+	        applyText: self.options.applyText,
 	        removeText: self.options.removeText
 	      }));
 	    }
@@ -1958,6 +2243,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    self.filterStateModel.trigger("filter:save");
+	  },
+
+	  /**
+	   * @method applyFilter
+	   * @param {Event} e
+	   */
+	  applyFilter: function(e) {
+	    var self = this;
+	    self.saveFilter(e);
+	    self.filterStateModel.trigger("filter:apply");
 	  },
 
 	  /**
@@ -2068,7 +2363,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      self.stopPropagation(e);
 	    }
 
-	    self.filterStateModel.setActiveFilter(self.filter);
+	    // Get current filter
+	    var currentFilter = self.filterStateModel.getActiveFilter();
+	    if (currentFilter !== self.filter) {
+	      self.filterStateModel.setActiveFilter(self.filter);
+	      self.filterStateModel.trigger("filter:loaded");
+	    }
 	  },
 
 	  /**
@@ -2502,11 +2802,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  tagName: "span",
 	  templates: {
 	    noFilterSelected: _.template("create"),
-	    filterSelected: _.template("<span class=\"remove\"><%-filterName%></span><span class=\"remove-filter\">x</span>")
+	    filterSelected: _.template("<span class=\"close-filter-name\"><%-filterName%></span><span class=\"close-filter-icon\">x</span>")
 	  },
 	  events: {
 	    "click": "labelClick",
-	    "click .remove-filter": "removeClick"
+	    "click .close-filter-icon": "closeClick"
 	  },
 
 	  /**
@@ -2581,14 +2881,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  /**
-	   * @method removeClick
+	   * @method closeClick
 	   * @param {Event} e
 	   */
-	  removeClick: function(e) {
+	  closeClick: function(e) {
 	    var self = this;
 	    self.stopEvent(e);
 	    if (self.filterStateModel.get("activeFilterId")) {
 	      self.filterStateModel.trigger("filter:save");
+	      self.filterStateModel.trigger("filter:close");
 	      self.filterStateModel.set("activeFilterId", null);
 	    }
 	  },
@@ -3369,10 +3670,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var fsm = self.filterStateModel;
 	    self.listenTo(fsm, "filter:new", self.evtNewFilter);
 	    self.listenTo(fsm, "filter:save", self.evtSaveFilter);
+	    self.listenTo(fsm, "filter:apply", self.evtApplyFilter);
 	    //self.listenTo(fsm, "filter:change", self.evtChangeFilter);
 	    self.listenTo(fsm, "filter:reset", self.evtResetFilter);
 	    self.listenTo(fsm, "filter:cancel", self.evtCancelFilter);
 	    self.listenTo(fsm, "filter:remove", self.evtRemoveFilter);
+	    self.listenTo(fsm, "filter:close", self.evtCloseFilter);
+	    self.listenTo(fsm, "filter:loaded", self.evtLoadedFilter);
 	  },
 
 	  /**
@@ -3400,6 +3704,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (filter) {
 	      filter.saveFilter();
 	      self.trigger("filter:save", filter.cid, filter);
+	    }
+	  },
+
+	  /**
+	   * Event handler for filter:apply (fsm)
+	   * @method evtApplyFilter
+	   */
+	  evtApplyFilter: function() {
+	    var self = this;
+	    var fsm = self.filterStateModel;
+	    var filter = fsm.getActiveFilter();
+	    if (filter) {
+	      self.trigger("filter:apply", filter.cid, filter);
 	    }
 	  },
 
@@ -3455,6 +3772,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	    fsm.set("activeFilterId", null);
 	    fsm.get("filterCollection").remove(filter);
 	    self.trigger("filter:remove", filterId, filterName);
+	  },
+
+	  /**
+	   * Event handler for filter:close (fsm)
+	   * @method evtCloseFilter
+	   */
+	  evtCloseFilter: function() {
+	    var self = this;
+	    var fsm = self.filterStateModel;
+	    var filter = fsm.getActiveFilter();
+	    if (filter) {
+	      self.trigger("filter:close", filter.cid, filter);
+	    }
+	  },
+
+	  /**
+	   * Event handler for filter:loaded (fsm)
+	   * @method evtLoadedFilter
+	   */
+	  evtLoadedFilter: function() {
+	    var self = this;
+	    var fsm = self.filterStateModel;
+	    var filter = fsm.getActiveFilter();
+	    if (filter) {
+	      self.trigger("filter:loaded", filter.cid, filter);
+	    }
 	  },
 
 	  /**

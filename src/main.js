@@ -2,6 +2,9 @@
  * Backgrid demo implementation of multiple plugins.
  */
 
+// Database server credentials
+var restURL = "https://backgriddemo-rest.herokuapp.com/?territories=";
+
 // Helper functions
 function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -492,6 +495,10 @@ function renderGrid(gridContainerId) {
 
   // backgrid-advanced-filter enabled?
   if (pluginSettings["backgrid-advanced-filter"]) {
+    var $info = $("<hr><p><strong>Backgrid advanced-filter information:</strong><br/>" +
+        "Filter will be applied when 'apply' is clicked. The 'save' button will save the filter and output the result to the console." +
+        "</p><hr>");
+
     // Initialize a client-side filter to filter on the client
     // mode pageable collection's cache.
     var advancedFilter = gridObjects.advancedFilter = new Backgrid.Extension.AdvancedFilter.Main({
@@ -502,15 +509,72 @@ function renderGrid(gridContainerId) {
     // Render the filter
     var $advancedFilterContainer = $("<div class='advanced-filter-container'></div>").appendTo($(gridContainerId));
     $advancedFilterContainer.append(advancedFilter.render().el);
+    $advancedFilterContainer.append($info);
 
     // Bind to save event as per example
     advancedFilter.on("filter:save", function(filterId, filterModel) {
-      alert("Filter saved, check console for export");
       console.log("Currently active filter saved. ");
       console.log(" >> Filter model: ", filterModel);
       console.log(" >> Filter export as object: ", filterModel.exportFilter("mongo"));
       console.log(" >> Filter export as string: ", filterModel.exportFilter("mongo", true));
     });
+
+    advancedFilter.on("filter:apply", _.debounce(function(filterId, filterModel) {
+      var requestFilter = filterModel.exportFilter("mongo", true);
+      var encodedFilter = encodeURIComponent(requestFilter);
+      console.log("Applying filter: ", requestFilter);
+
+      // Set opacity of grid while loading
+      $(gridContainerId).fadeTo( "fast", 0.33 );
+
+      $.getJSON(restURL + encodedFilter, function( data ) {
+        // Parse data
+        var resultData = [];
+        _.each(data, function(obj) {
+          delete obj._id;
+          resultData.push(obj);
+        });
+
+        console.log("Filtered data loaded: ", resultData, "for filter: ", requestFilter);
+        if (pluginSettings["backgrid-paginator"]) {
+          dataCollection.fullCollection.reset(resultData);
+        }
+        else {
+          dataCollection.reset(resultData);
+        }
+        $(gridContainerId).fadeTo( "fast", 1);
+      });
+    }), 2000, true);
+
+    // Reset data on filter close and/or filter loaded
+    advancedFilter.on("filter:close filter:loaded", _.debounce(function(filterId, filterModel) {
+      var requestFilter = filterModel.exportFilter("mongo", true);
+
+      if (requestFilter !== "{}") {
+        console.log("Filter closed, resetting data: ", filterModel);
+
+        // Set opacity of grid while loading
+        $(gridContainerId).fadeTo( "fast", 0.33 );
+
+        $.getJSON(restURL + encodeURIComponent("{}"), function( data ) {
+          // Parse data
+          var resultData = [];
+          _.each(data, function(obj) {
+            delete obj._id;
+            resultData.push(obj);
+          });
+
+          console.log("Original data loaded: ", resultData);
+          if (pluginSettings["backgrid-paginator"]) {
+            dataCollection.fullCollection.reset(resultData);
+          }
+          else {
+            dataCollection.reset(resultData);
+          }
+          $(gridContainerId).fadeTo( "fast", 1);
+        });
+      }
+    }), 2000, true);
   }
   else if (pluginSettings["backgrid-filter"]) {
   // backgrid-filter enabled?
