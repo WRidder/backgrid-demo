@@ -101,7 +101,7 @@ function getColumnCollection() {
       resizeAble: false,
       orderable: false
     },
-    "id": {
+    "tid": {
       width: 50,
       nesting: ["General"],
       resizeable: false,
@@ -146,7 +146,7 @@ function getColumnCollection() {
   };
 
   var columnDefinition = [{
-    name: "id", // The key of the model attribute
+    name: "tid", // The key of the model attribute
     label: "ID", // The name to display in the header
     editable: false, // By default every cell in a column is editable, but *ID* shouldn't be
     cell: Backgrid.IntegerCell.extend({
@@ -244,217 +244,217 @@ function getDataCollection() {
     "pop": 25500100,
     "date": "2013-01-01",
     "percentage": 0.36,
-    "id": 1
+    "tid": 1
   }, {
     "name": "Albania",
     "url": "http://en.wikipedia.org/wiki/Albania",
     "pop": 2831741,
     "date": "2011-10-01",
     "percentage": 0.04,
-    "id": 2
+    "tid": 2
   }, {
     "name": "Algeria",
     "url": "http://en.wikipedia.org/wiki/Algeria",
     "pop": 37100000,
     "date": "2012-01-01",
     "percentage": 0.53,
-    "id": 3
+    "tid": 3
   }, {
     "name": "American Samoa (USA)",
     "url": "http://en.wikipedia.org/wiki/American_Samoa",
     "pop": 55519,
     "date": "2010-04-01",
     "percentage": 0.00079,
-    "id": 4
+    "tid": 4
   }, {
     "name": "Andorra",
     "url": "http://en.wikipedia.org/wiki/Andorra",
     "pop": 78115,
     "date": "2011-07-01",
     "percentage": 0.0011,
-    "id": 5
+    "tid": 5
   }, {
     "name": "Angola",
     "url": "http://en.wikipedia.org/wiki/Angola",
     "pop": 20609294,
     "date": "2012-07-01",
     "percentage": 0.29,
-    "id": 6
+    "tid": 6
   }, {
     "name": "Anguilla (UK)",
     "url": "http://en.wikipedia.org/wiki/Anguilla",
     "pop": 13452,
     "date": "2011-05-11",
     "percentage": 0.00019,
-    "id": 7
+    "tid": 7
   }, {
     "name": "Antigua and Barbuda",
     "url": "http://en.wikipedia.org/wiki/Antigua_and_Barbuda",
     "pop": 86295,
     "date": "2011-05-27",
     "percentage": 0.0012,
-    "id": 8
+    "tid": 8
   }, {
     "name": "Argentina",
     "url": "http://en.wikipedia.org/wiki/Argentina",
     "pop": 40117096,
     "date": "2010-10-27",
     "percentage": 0.57,
-    "id": 9
+    "tid": 9
   }, {
     "name": "Armenia",
     "url": "http://en.wikipedia.org/wiki/Armenia",
     "pop": 3275700,
     "date": "2012-06-01",
     "percentage": 0.046,
-    "id": 10
+    "tid": 10
   }, {
     "name": "Aruba (Netherlands)",
     "url": "http://en.wikipedia.org/wiki/Aruba",
     "pop": 101484,
     "date": "2010-09-29",
     "percentage": 0.0014,
-    "id": 11
+    "tid": 11
   }, {
     "name": "Australia",
     "url": "http://en.wikipedia.org/wiki/Australia",
     "pop": 22808690,
     "date": "2012-11-11",
     "percentage": 0.32,
-    "id": 12
+    "tid": 12
   }, {
     "name": "Austria",
     "url": "http://en.wikipedia.org/wiki/Austria",
     "pop": 8452835,
     "date": "2012-07-01",
     "percentage": 0.12,
-    "id": 13
+    "tid": 13
   }, {
     "name": "Azerbaijan",
     "url": "http://en.wikipedia.org/wiki/Azerbaijan",
     "pop": 9235100,
     "date": "2012-01-01",
     "percentage": 0.13,
-    "id": 14
+    "tid": 14
   }, {
     "name": "Bahamas",
     "url": "http://en.wikipedia.org/wiki/The_Bahamas",
     "pop": 353658,
     "date": "2010-05-03",
     "percentage": 0.005,
-    "id": 15
+    "tid": 15
   }, {
     "name": "Bahrain",
     "url": "http://en.wikipedia.org/wiki/Bahrain",
     "pop": 1234571,
     "date": "2010-04-27",
     "percentage": 0.018,
-    "id": 16
+    "tid": 16
   }, {
     "name": "Bangladesh",
     "url": "http://en.wikipedia.org/wiki/Bangladesh",
     "pop": 152518015,
     "date": "2012-07-16",
     "percentage": 2.16,
-    "id": 17
+    "tid": 17
   }, {
     "name": "Barbados",
     "url": "http://en.wikipedia.org/wiki/Barbados",
     "pop": 274200,
     "date": "2010-07-01",
     "percentage": 0.0039,
-    "id": 18
+    "tid": 18
   }, {
     "name": "Belarus",
     "url": "http://en.wikipedia.org/wiki/Belarus",
     "pop": 9459000,
     "date": "2012-09-01",
     "percentage": 0.13,
-    "id": 19
+    "tid": 19
   }, {
     "name": "Belgium",
     "url": "http://en.wikipedia.org/wiki/Belgium",
     "pop": 10839905,
     "date": "2010-01-01",
     "percentage": 0.15,
-    "id": 20
+    "tid": 20
   }, {
     "name": "Belize",
     "url": "http://en.wikipedia.org/wiki/Belize",
     "pop": 312971,
     "date": "2010-05-12",
     "percentage": 0.0044,
-    "id": 21
+    "tid": 21
   }, {
     "name": "Benin",
     "url": "http://en.wikipedia.org/wiki/Benin",
     "pop": 9352000,
     "date": "2012-07-01",
     "percentage": 0.13,
-    "id": 22
+    "tid": 22
   }, {
     "name": "Bermuda (UK)",
     "url": "http://en.wikipedia.org/wiki/Bermuda",
     "pop": 64237,
     "date": "2010-05-20",
     "percentage": 0.00091,
-    "id": 23
+    "tid": 23
   }, {
     "name": "Bhutan",
     "url": "http://en.wikipedia.org/wiki/Bhutan",
     "pop": 720679,
     "date": "2012-07-01",
     "percentage": 0.01,
-    "id": 24
+    "tid": 24
   }, {
     "name": "Bolivia",
     "url": "http://en.wikipedia.org/wiki/Bolivia",
     "pop": 10426155,
     "date": "2010-07-01",
     "percentage": 0.15,
-    "id": 25
+    "tid": 25
   }, {
     "name": "Bosnia and Herzegovina",
     "url": "http://en.wikipedia.org/wiki/Bosnia_and_Herzegovina",
     "pop": 3868621,
     "date": "2012-06-30",
     "percentage": 0.055,
-    "id": 26
+    "tid": 26
   }, {
     "name": "Botswana",
     "url": "http://en.wikipedia.org/wiki/Botswana",
     "pop": 2024904,
     "date": "2011-08-22",
     "percentage": 0.029,
-    "id": 27
+    "tid": 27
   }, {
     "name": "Brazil",
     "url": "http://en.wikipedia.org/wiki/Brazil",
     "pop": 193946886,
     "date": "2012-07-01",
     "percentage": 2.75,
-    "id": 28
+    "tid": 28
   }, {
     "name": "British Virgin Islands (UK)",
     "url": "http://en.wikipedia.org/wiki/British_Virgin_Islands",
     "pop": 29537,
     "date": "2010-07-01",
     "percentage": 0.00042,
-    "id": 29
+    "tid": 29
   }, {
     "name": "Brunei",
     "url": "http://en.wikipedia.org/wiki/Brunei",
     "pop": 393162,
     "date": "2011-06-20",
     "percentage": 0.0056,
-    "id": 30
+    "tid": 30
   }, {
     "name": "Bulgaria",
     "url": "http://en.wikipedia.org/wiki/Bulgaria",
     "pop": 7364570,
     "date": "2011-02-01",
     "percentage": 0.1,
-    "id": 31
+    "tid": 31
   }];
 
   var dataCollection = (pluginSettings["backgrid-paginator"]) ?
@@ -547,11 +547,12 @@ function renderGrid(gridContainerId) {
     }), 2000, true);
 
     // Reset data on filter close and/or filter loaded
-    advancedFilter.on("filter:close filter:loaded", _.debounce(function(filterId, filterModel) {
-      var requestFilter = filterModel.exportFilter("mongo", true);
+    advancedFilter.on("filter:close filter:loaded filter:remove", _.debounce(function(filterId, filterModel) {
+      console.log(filterModel);
+      var requestFilter = filterModel instanceof Backbone.Model ? filterModel.exportFilter("mongo", true) : null;
 
       if (requestFilter !== "{}") {
-        console.log("Filter closed, resetting data: ", filterModel);
+        console.log("Filter closed/loaded/removed resetting data: ", filterModel instanceof Backbone.Model ? filterModel : "");
 
         // Set opacity of grid while loading
         $(gridContainerId).fadeTo( "fast", 0.33 );
